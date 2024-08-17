@@ -4,6 +4,7 @@ import Peer from 'peerjs';
 function App() {
   const [peerid, setPeerid] = useState('');
   const [inputPeerId, setInputPeerId] = useState('');
+  const [connectedPeerId, setConnectedPeerId] = useState('');
   const [status, setStatus] = useState('');
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [peer, setPeer] = useState(null);
@@ -19,6 +20,7 @@ function App() {
     newPeer.on('connection', (connection) => {
       console.log(connection);
       setConn(connection);
+      setConnectedPeerId(connection.peer);
       connection.on('data', (data) => {
         handleIncomingData(data);
       });
@@ -59,10 +61,11 @@ function App() {
     }
     if (peer) {
       const connection = peer.connect(peerId);
-      console.log(connection)
+      console.log(connection);
       connection.on('open', () => {
         console.log(`Connected to peer with ID: ${peerId}`);
         setConn(connection);
+        setConnectedPeerId(peerId);
         connection.on('data', (data) => {
           handleIncomingData(data);
         });
@@ -83,13 +86,12 @@ function App() {
 
   return (
     <>
-
-    <h1 className="heading">Welcome to Multiplayer Tic-Tac-Toe</h1>
-    <hr className='line'/>
+      <h1 className="heading">Welcome to Multiplayer Tic-Tac-Toe</h1>
+      <hr className='line'/>
 
       <div className='space' />
       <div className="input-wrapper">
-      <div className="status">{status}</div>
+        <div className="status">{status}</div>
       </div>
 
       <div className='space' />
@@ -133,12 +135,8 @@ function App() {
 
       <div className='space' />
       <div className="input-wrapper">
-        <div className="status">{`connected peer id : ${inputPeerId}`}</div>
+        <div className="status">{`Connected peer id : ${connectedPeerId}`}</div>
       </div>
-      
-     
-      
-      
     </>
   );
 }

@@ -76,12 +76,9 @@
     font-weight: 500;
 }
 
-
-.status{
+.status {
     font-size: 28px;
 }
-
-
 
 .input-button {
     padding: 10px;
@@ -90,9 +87,35 @@
     background: #EEEEEE;
     border: 2px solid black;
     font-weight: bolder;
-
 }
 
 .input-button:hover {
     background: grey;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+    .line {
+        width: 100%;
+    }
+
+    .box {
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+    }
+
+    .input-container {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .input-field {
+        margin-right: 2px;
+    }
+
+    .status {
+        font-size: 18px;
+        text-align: center;
+    }
 }
