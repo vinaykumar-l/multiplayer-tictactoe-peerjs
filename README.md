@@ -29,7 +29,7 @@ I stumbled upon the PeerJS package while exploring the internet and decided to e
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/multiplayer-tic-tac-toe.git
+   git clone git@github.com:vinaykumar-l/multiplayer-tictactoe-peerjs.git
    cd multiplayer-tic-tac-toe
    ```
 
