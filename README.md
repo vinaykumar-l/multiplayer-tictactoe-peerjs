@@ -30,7 +30,7 @@ I stumbled upon the PeerJS package while exploring the internet and decided to e
 1. Clone the repository:
    ```sh
    git clone git@github.com:vinaykumar-l/multiplayer-tictactoe-peerjs.git
-   cd multiplayer-tic-tac-toe
+   cd multiplayer-tictactoe-peerjs
    ```
 
 2. Install the dependencies:
