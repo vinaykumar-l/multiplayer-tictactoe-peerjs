@@ -28,20 +28,23 @@ I stumbled upon the PeerJS package while exploring the internet and decided to e
 ### Installation
 
 1. Clone the repository:
+
    ```sh
    git clone git@github.com:vinaykumar-l/multiplayer-tictactoe-peerjs.git
    cd multiplayer-tictactoe-peerjs
    ```
 
 2. Install the dependencies:
-    ```
-    npm install
-    ```
+
+   ```
+   npm install
+   ```
 
 3. Start the development server:
-    ```
-    npm run dev
-    ```
+
+   ```
+   npm run dev
+   ```
 
 4. Open your browser and navigate to the URL provided by Vite (usually `http://localhost:5174/`).
 
@@ -71,5 +74,12 @@ multiplayer-tic-tac-toe/
 └── vite.config.js
 ```
 
+### Future features list
+
+- [x] Optimization
+- [x] single player implementation
+- [x] restricting for same player to player after his turn
+- [ ] real-time chat box interface for communication between the players
+- [ ] authentication implementation and profile management
 
 ### @thanks for visiting
