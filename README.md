@@ -74,7 +74,7 @@ multiplayer-tic-tac-toe/
 └── vite.config.js
 ```
 
-### Future features list
+## Future features list
 
 - [x] Optimization
 - [x] single player implementation
