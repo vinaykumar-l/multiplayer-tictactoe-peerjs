@@ -10,20 +10,25 @@ function App() {
   const [peer, setPeer] = useState(null);
   const [conn, setConn] = useState(null);
   const [isXNext, setIsXNext] = useState(true);
-  const [activePlayer, setActivePlater] = useState("");
+  const [activePlayer, setActivePlayer] = useState(""); // Fixed typo here
 
   useEffect(() => {
     const newPeer = new Peer();
     newPeer.on("open", (id) => {
       setPeerid(id);
+      setStatus(`Your peer ID: ${id}`);
     });
 
     newPeer.on("connection", (connection) => {
-      console.log(connection);
+      console.log("Incoming connection:", connection);
       setConn(connection);
       setConnectedPeerId(connection.peer);
       connection.on("data", (data) => {
         handleIncomingData(data);
+      });
+      connection.on("error", (err) => {
+        console.error("Connection error:", err);
+        setStatus("Connection error. Please try again.");
       });
     });
 
@@ -38,13 +43,13 @@ function App() {
 
   const handleClick = (i) => {
     const newSquares = squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (activePlayer == peerid || calculateWinner(squares) || squares[i]) {
       return;
     }
     newSquares[i] = isXNext ? "X" : "O";
     setSquares(newSquares);
     setIsXNext(!isXNext);
-    setActivePlater(peerid);
+    setActivePlayer(peerid);
     const winner = calculateWinner(newSquares);
     if (winner) {
       setStatus(`Winner: ${winner}`);
@@ -56,7 +61,7 @@ function App() {
         squares: newSquares,
         isXNext: !isXNext,
         mess: "hello",
-        active: activePlayer,
+        active: peerid,
       });
     }
   };
@@ -64,11 +69,12 @@ function App() {
   const connectToPeer = (peerId) => {
     if (!peerId) {
       console.error("Peer ID is undefined");
+      setStatus("Peer ID is undefined. Please enter a valid peer ID.");
       return;
     }
     if (peer) {
       const connection = peer.connect(peerId);
-      console.log(connection);
+      console.log("Connecting to peer:", connection);
       connection.on("open", () => {
         console.log(`Connected to peer with ID: ${peerId}`);
         setConn(connection);
@@ -77,13 +83,20 @@ function App() {
           handleIncomingData(data);
         });
       });
+      connection.on("error", (err) => {
+        console.error("Connection error:", err);
+        setStatus("Connection error. Please try again.");
+      });
     }
   };
 
   const handleIncomingData = (data) => {
-    console.log(data);
+    console.log("Incoming data:", data);
     setSquares(data.squares);
     setIsXNext(data.isXNext);
+    setActivePlayer(data.active);
+    console.log("Active player set to:", data.active); // Debug log
+
     const winner = calculateWinner(data.squares);
     if (winner) {
       setStatus(`Winner: ${winner}`);
@@ -96,12 +109,10 @@ function App() {
     <>
       <h1 className="heading">Welcome to Multiplayer Tic-Tac-Toe</h1>
       <hr className="line" />
-
       <div className="space" />
       <div className="input-wrapper">
         <div className="status">{status}</div>
       </div>
-
       <div className="space" />
       <div className="input-wrapper">
         <div className="input-container">
@@ -138,12 +149,11 @@ function App() {
       </div>
       <div className="space" />
       <div className="input-wrapper">
-        <div className="status">{`Your peer id : ${peerid}`}</div>
+        <div className="status">{`Your peer id: ${peerid}`}</div>
       </div>
-
       <div className="space" />
       <div className="input-wrapper">
-        <div className="status">{`Connected peer id : ${connectedPeerId}`}</div>
+        <div className="status">{`Connected peer id: ${connectedPeerId}`}</div>
       </div>
     </>
   );
