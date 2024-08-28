@@ -159,6 +159,9 @@ function App() {
       <div className="input-wrapper">
         <div className="status">{`Connected peer id : ${connectedPeerId}`}</div>
       </div>
+      <div className="space" />
+      <hr className="line" />
+      <h2 className="heading">@ vinay-kumar production 😜😁✌️</h2>
     </>
   );
 }
