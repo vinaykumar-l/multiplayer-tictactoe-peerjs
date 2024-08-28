@@ -1,55 +1,56 @@
-import React, { useSyncExternalStore } from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Peer from "peerjs";
-import "./index.css";
 
-export default function App() {
+function App() {
+  const [peerid, setPeerid] = useState("");
+  const [inputPeerId, setInputPeerId] = useState("");
+  const [connectedPeerId, setConnectedPeerId] = useState("");
+  const [status, setStatus] = useState("");
   const [squares, setSquares] = useState(Array(9).fill(null));
+  const [peer, setPeer] = useState(null);
+  const [conn, setConn] = useState(null);
   const [isXNext, setIsXNext] = useState(true);
-  const [activePlayer, setActivePlater] = useState("");
+  const [activePlayer, setActivePlayer] = useState("");
 
   useEffect(() => {
     const newPeer = new Peer();
     newPeer.on("open", (id) => {
       setPeerid(id);
+      setStatus(`Your peer ID: ${id}`);
     });
 
     newPeer.on("connection", (connection) => {
-      console.log(connection);
+      console.log("Incoming connection:", connection);
       setConn(connection);
       setConnectedPeerId(connection.peer);
       connection.on("data", (data) => {
         handleIncomingData(data);
       });
+      connection.on("error", (err) => {
+        console.error("Connection error:", err);
+        setStatus("Connection error. Please try again.");
+      });
     });
 
     setPeer(newPeer);
 
-    newPeer.on("connection", (connection) => {
-      connection.on("data", (data) => {
-        setMessage(data);
-      });
-    });
+    return () => {
+      if (peer) {
+        peer.destroy();
+      }
+    };
   }, []);
 
-  function connectToPeer(peerId) {
-    const conn = peer.connect(peerId);
-    conn.on("open", () => {
-      console.log("connected\n");
-      conn.send(`hi is message from the peer id ${peer.id}`);
-    });
-  }
-
-  function handleClick(i) {
+  const handleClick = (i) => {
     const newSquares = squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (activePlayer == peerid || calculateWinner(squares) || squares[i]) {
+      setStatus("Not Your Turn");
       return;
     }
-
     newSquares[i] = isXNext ? "X" : "O";
     setSquares(newSquares);
     setIsXNext(!isXNext);
-    setActivePlater(peerid);
+    setActivePlayer(peerid);
     const winner = calculateWinner(newSquares);
     if (winner) {
       setStatus(`Winner: ${winner}`);
@@ -61,19 +62,20 @@ export default function App() {
         squares: newSquares,
         isXNext: !isXNext,
         mess: "hello",
-        active: activePlayer,
+        active: peerid,
       });
     }
-  }
+  };
 
   const connectToPeer = (peerId) => {
     if (!peerId) {
       console.error("Peer ID is undefined");
+      setStatus("Peer ID is undefined. Please enter a valid peer ID.");
       return;
     }
     if (peer) {
       const connection = peer.connect(peerId);
-      console.log(connection);
+      console.log("Connecting to peer:", connection);
       connection.on("open", () => {
         console.log(`Connected to peer with ID: ${peerId}`);
         setConn(connection);
@@ -82,13 +84,20 @@ export default function App() {
           handleIncomingData(data);
         });
       });
+      connection.on("error", (err) => {
+        console.error("Connection error:", err);
+        setStatus("Connection error. Please try again.");
+      });
     }
   };
 
   const handleIncomingData = (data) => {
-    console.log(data);
+    console.log("Incoming data:", data);
     setSquares(data.squares);
     setIsXNext(data.isXNext);
+    setActivePlayer(data.active);
+    console.log("Active player set to:", data.active); // Debug log
+
     const winner = calculateWinner(data.squares);
     if (winner) {
       setStatus(`Winner: ${winner}`);
@@ -126,7 +135,6 @@ export default function App() {
           </button>
         </div>
       </div>
-
       <div className="container">
         <Square value={squares[0]} onSquareClicked={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClicked={() => handleClick(1)} />
@@ -142,10 +150,9 @@ export default function App() {
         <Square value={squares[7]} onSquareClicked={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClicked={() => handleClick(8)} />
       </div>
-
       <div className="space" />
       <div className="input-wrapper">
-        <div className="status">{`Your peer id: ${peerid}`}</div>
+        <div className="status">{`Your peer id : ${peerid}`}</div>
       </div>
 
       <div className="space" />
@@ -153,6 +160,14 @@ export default function App() {
         <div className="status">{`Connected peer id : ${connectedPeerId}`}</div>
       </div>
     </>
+  );
+}
+
+function Square({ value, onSquareClicked }) {
+  return (
+    <div className="box" onClick={onSquareClicked}>
+      {value}
+    </div>
   );
 }
 
@@ -176,10 +191,4 @@ function calculateWinner(squares) {
   return null;
 }
 
-function Square({ value, onSquareClicked }) {
-  return (
-    <div className="box" onClick={onSquareClicked}>
-      {value}
-    </div>
-  );
-}
+export default App;
