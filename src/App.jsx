@@ -43,8 +43,13 @@ function App() {
 
   const handleClick = (i) => {
     const newSquares = squares.slice();
-    if (activePlayer == peerid || calculateWinner(squares) || squares[i]) {
-      setStatus("Not Your Turn");
+    if (connectedPeerId != "") {
+      if (activePlayer == peerid || calculateWinner(squares) || squares[i]) {
+        setStatus("Not Your Turn");
+        return;
+      }
+    }
+    if (calculateWinner(squares) || squares[i]) {
       return;
     }
     newSquares[i] = isXNext ? "X" : "O";
