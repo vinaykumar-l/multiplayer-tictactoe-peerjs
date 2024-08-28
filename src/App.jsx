@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Peer from "peerjs";
 
 function App() {
+  // states required
   const [peerid, setPeerid] = useState("");
   const [inputPeerId, setInputPeerId] = useState("");
   const [connectedPeerId, setConnectedPeerId] = useState("");
@@ -12,6 +13,7 @@ function App() {
   const [isXNext, setIsXNext] = useState(true);
   const [activePlayer, setActivePlayer] = useState("");
 
+  // this useeffect will helps to generate your peerid and also listens for any incomming connection requests else if already connected accepts the data
   useEffect(() => {
     const newPeer = new Peer();
     newPeer.on("open", (id) => {
